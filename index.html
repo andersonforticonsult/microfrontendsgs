@@ -7,13 +7,13 @@
   <style>
     :root {
       /* Padrão de Identidade Visual SGS */
-      --sgs-orange: #f36f21;         /* Laranja Oficial SGS */
-      --sgs-orange-hover: #d8570d;   /* Hover Laranja */
-      --sgs-orange-surface: #fff7ed; /* Fundo suave de alerta/destaque */
-      --sgs-grey: #77787b;           /* Cinza Oficial SGS (Grey PMS 424) */
-      --sgs-grey-dark: #4a4d50;      /* Cinza Chumbo Corporativo */
-      --sgs-dark: #263238;           /* Fundo Institucional */
-      --sgs-dark-sidebar: #1a232a;   /* Sidebar corporativa */
+      --sgs-orange: #f36f21;
+      --sgs-orange-hover: #d8570d;
+      --sgs-orange-surface: #fff7ed;
+      --sgs-grey: #77787b;
+      --sgs-grey-dark: #4a4d50;
+      --sgs-dark: #263238;
+      --sgs-dark-sidebar: #1a232a;
       
       /* Neutros Slate */
       --slate-50: #f8fafc;
@@ -27,13 +27,13 @@
       --slate-800: #1e293b;
       --slate-900: #0f172a;
       
-      /* Status Semânticos (Azul substituído por tons de cinza corporativo) */
+      /* Status Semânticos */
       --green-600: #16a34a;
       --green-50: #f0fdf4;
       --red-600: #dc2626;
       --red-50: #fef2f2;
-      --blue-600: #475569;           /* Substituído por Cinza Slate */
-      --blue-50: #f1f5f9;            /* Substituído por Cinza Claro */
+      --blue-600: #475569;
+      --blue-50: #f1f5f9;
       --purple-600: #9333ea;
       --purple-50: #faf5ff;
       --icl-indigo: #475569;
@@ -56,7 +56,19 @@
       height: 100vh;
       overflow: hidden;
       font-size: 13px;
+      position: relative;
     }
+
+    /* OVERLAY MOBILE */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 90;
+      backdrop-filter: blur(2px);
+    }
+    .sidebar-overlay.active { display: block; }
 
     /* BARRA LATERAL (SIDEBAR) */
     aside.sidebar {
@@ -67,7 +79,8 @@
       flex-direction: column;
       flex-shrink: 0;
       border-right: 1px solid #2b3844;
-      z-index: 20;
+      z-index: 100;
+      transition: transform 0.25s ease-in-out;
     }
     .brand-box {
       padding: 14px 18px;
@@ -75,7 +88,13 @@
       border-bottom: 3px solid var(--sgs-orange);
       display: flex;
       align-items: center;
-      gap: 14px;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     .brand-logo-container {
       background: #ffffff;
@@ -88,6 +107,16 @@
     }
     .brand-text h2 { font-size: 13.5px; font-weight: 800; color: #ffffff; letter-spacing: 0.3px; }
     .brand-text p { font-size: 10px; color: #cbd5e1; text-transform: uppercase; font-weight: 600; letter-spacing: 0.6px; }
+
+    .btn-close-sidebar {
+      display: none;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+    }
 
     .nav-scroll {
       flex: 1;
@@ -121,18 +150,14 @@
       color: #ffffff;
       transform: translateX(2px);
     }
-    
-    /* MENU ATIVO - 100% LARANJA SGS SÓLIDO */
     .nav-item.active {
       background: var(--sgs-orange);
       color: #ffffff;
       font-weight: 600;
-      border-left: none;
       box-shadow: 0 2px 6px rgba(243, 111, 33, 0.35);
     }
     .nav-item .icon { font-size: 14px; width: 18px; text-align: center; }
 
-    /* CARD DE USUÁRIO FIXO NO RODAPÉ DA SIDEBAR */
     .sidebar-footer {
       padding: 12px 14px;
       background: #131a20;
@@ -166,34 +191,62 @@
       flex-direction: column;
       overflow: hidden;
       background: var(--slate-100);
+      min-width: 0;
     }
 
-    /* TOPBAR HEADER NO PADRÃO SGS */
+    /* TOPBAR */
     header.topbar {
       background: var(--sgs-dark);
-      height: 60px;
+      min-height: 56px;
       border-bottom: 3px solid var(--sgs-orange);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 24px;
+      padding: 0 16px;
       flex-shrink: 0;
       color: #ffffff;
       box-shadow: 0 1px 4px rgba(0,0,0,0.1);
       position: relative;
+      gap: 10px;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .btn-menu-toggle {
+      display: none;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 18px;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
     }
     .breadcrumb-area {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
       font-size: 12.5px;
       color: #94a3b8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .breadcrumb-area strong { color: #ffffff; font-size: 13.5px; font-weight: 700; letter-spacing: 0.2px; }
+    .breadcrumb-area strong {
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .topbar-actions {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      flex-shrink: 0;
     }
     .tag-glass {
       display: inline-flex;
@@ -201,12 +254,13 @@
       background: rgba(255, 255, 255, 0.12);
       border: 1px solid rgba(255, 255, 255, 0.2);
       color: #ffffff;
-      padding: 4px 10px;
+      padding: 4px 8px;
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.4px;
       text-transform: uppercase;
+      white-space: nowrap;
     }
     .tag-glass-icl {
       background: rgba(100, 116, 139, 0.35);
@@ -214,11 +268,12 @@
       color: #f1f5f9;
     }
 
-    /* VIEWPORT DAS TELAS */
+    /* VIEWPORT */
     .viewport {
       flex: 1;
       overflow-y: auto;
-      padding: 22px 24px 40px 24px;
+      padding: 16px;
+      -webkit-overflow-scrolling: touch;
     }
     .screen-pane {
       display: none;
@@ -232,7 +287,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* COMPONENTES DE TELA */
     .mockup-window {
       background: #ffffff;
       border: 1px solid var(--slate-300);
@@ -244,14 +298,15 @@
     .mockup-bar {
       background: var(--sgs-dark);
       color: #e2e8f0;
-      padding: 7px 14px;
+      padding: 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       font-size: 11px;
       border-bottom: 1px solid #334155;
+      gap: 10px;
     }
-    .browser-dots { display: flex; gap: 5px; align-items: center; }
+    .browser-dots { display: flex; gap: 5px; align-items: center; flex-shrink: 0; }
     .dot { width: 8px; height: 8px; border-radius: 50%; }
     .dot-r { background: #ef4444; }
     .dot-y { background: #f59e0b; }
@@ -262,21 +317,26 @@
       color: #94a3b8;
       padding: 2px 8px;
       border-radius: 4px;
-      font-size: 11px;
-      margin-left: 8px;
+      font-size: 10.5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 260px;
     }
-    .pane-content { padding: 18px 20px; }
+    .pane-content { padding: 14px; }
 
     .pane-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       padding-bottom: 12px;
       margin-bottom: 14px;
       border-bottom: 1px solid var(--slate-200);
+      gap: 10px;
+      flex-wrap: wrap;
     }
-    .pane-title { font-size: 16px; font-weight: 700; color: var(--slate-900); }
-    .pane-sub { font-size: 12px; color: var(--slate-600); margin-top: 2px; }
+    .pane-title { font-size: 15px; font-weight: 700; color: var(--slate-900); }
+    .pane-sub { font-size: 11.5px; color: var(--slate-600); margin-top: 2px; }
 
     /* BOTÕES */
     .btn {
@@ -284,7 +344,7 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      height: 32px;
+      height: 34px;
       padding: 0 14px;
       font-size: 12px;
       font-weight: 600;
@@ -305,7 +365,7 @@
     .btn-gray { background: #fff; border: 1px solid var(--slate-300); color: var(--slate-700); }
     .btn-gray:hover { background: var(--slate-100); }
     .btn-table {
-      height: 24px;
+      height: 26px;
       padding: 0 10px;
       font-size: 11px;
       background: #fff;
@@ -314,43 +374,49 @@
       font-weight: 600;
       cursor: pointer;
       color: var(--slate-700);
+      white-space: nowrap;
     }
-    .btn-table:hover { background: var(--slate-100); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* TABELAS */
-    .data-table {
+    /* WRAPPER PARA SCROLL DE TABELAS */
+    .table-responsive {
       width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      background: #fff;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 8px;
       border: 1px solid var(--slate-200);
       border-radius: var(--radius-md);
+      background: #fff;
+    }
+    .data-table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+      font-size: 12px;
     }
     .data-table th {
       background: var(--slate-50);
       color: var(--slate-700);
       font-weight: 600;
       text-transform: uppercase;
-      font-size: 11px;
+      font-size: 10.5px;
       padding: 8px 12px;
       border-bottom: 2px solid var(--slate-300);
       text-align: left;
     }
     .data-table td {
-      padding: 9px 12px;
+      padding: 8px 12px;
       border-bottom: 1px solid var(--slate-200);
       color: var(--slate-800);
       vertical-align: middle;
     }
+    .data-table tr:last-child td { border-bottom: none; }
     .data-table tr:nth-child(even) td { background: #fafcff; }
-    .data-table tr:hover td { background: #f1f5f9; }
 
     /* FILTROS E FORMS */
     .filter-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 12px;
+      gap: 10px;
       background: var(--slate-50);
       border: 1px solid var(--slate-200);
       border-radius: var(--radius-md);
@@ -358,34 +424,36 @@
       margin-bottom: 14px;
       align-items: flex-end;
     }
-    .field-group { display: flex; flex-direction: column; gap: 4px; }
+    .field-group { display: flex; flex-direction: column; gap: 4px; width: 100%; }
     .field-label { font-size: 11px; font-weight: 700; color: var(--slate-600); text-transform: uppercase; }
     .field-input {
-      height: 32px;
+      height: 34px;
       border: 1px solid var(--slate-300);
       border-radius: var(--radius-sm);
       padding: 4px 10px;
       font-size: 12px;
       background: #ffffff;
       outline: none;
+      width: 100%;
     }
     .field-input:focus {
       border-color: var(--sgs-orange);
       box-shadow: 0 0 0 2px rgba(243, 111, 33, 0.18);
     }
 
-    /* BADGES (Substituído azul por variações de cinza corporativo) */
+    /* BADGES */
     .badge {
       display: inline-flex;
       align-items: center;
       padding: 2px 7px;
       border-radius: 12px;
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
+      white-space: nowrap;
     }
     .badge-orange { background: #ffedd5; color: #c2410c; }
-    .badge-blue { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; } /* Cinza SGS */
+    .badge-blue { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
     .badge-green { background: #dcfce7; color: #15803d; }
     .badge-red { background: #fee2e2; color: #991b1b; }
     .badge-purple { background: #f3e8ff; color: #6b21a8; }
@@ -395,62 +463,129 @@
     .kpi-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
+      gap: 10px;
       margin-bottom: 14px;
     }
     .kpi-card {
       background: #ffffff;
       border: 1px solid var(--slate-200);
       border-radius: var(--radius-md);
-      padding: 12px 16px;
+      padding: 10px;
       text-align: center;
-      transition: transform 0.15s ease;
     }
-    .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
-    .kpi-title { font-size: 10.5px; font-weight: 700; color: var(--slate-600); text-transform: uppercase; }
-    .kpi-num { font-size: 20px; font-weight: 800; color: var(--slate-900); margin: 2px 0; }
-    .kpi-desc { font-size: 10px; font-weight: 600; color: var(--green-600); }
+    .kpi-title { font-size: 10px; font-weight: 700; color: var(--slate-600); text-transform: uppercase; }
+    .kpi-num { font-size: 18px; font-weight: 800; color: var(--slate-900); margin: 2px 0; }
+    .kpi-desc { font-size: 9.5px; font-weight: 600; color: var(--green-600); }
 
-    /* ALERTAS / BANNERS (Substituído azul por cinza corporativo) */
+    /* ALERTAS / BANNERS */
     .banner {
-      padding: 10px 14px;
+      padding: 10px 12px;
       border-radius: var(--radius-md);
-      font-size: 12px;
+      font-size: 11.5px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
+      line-height: 1.4;
     }
     .banner-orange { background: #fff7ed; border-left: 4px solid var(--sgs-orange); color: #9a3412; }
-    .banner-blue { background: #f8fafc; border-left: 4px solid var(--sgs-grey); color: #334155; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+    .banner-blue { background: #f8fafc; border-left: 4px solid var(--sgs-grey); color: #334155; border: 1px solid #e2e8f0; border-left-width: 4px; }
     .banner-red { background: #fef2f2; border-left: 4px solid var(--red-600); color: #991b1b; }
 
     /* FOTOS */
-    .photo-deck { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 8px; }
+    .photo-deck {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
     .photo-item { border: 1px solid var(--slate-300); border-radius: var(--radius-md); overflow: hidden; text-align: center; background: #fff; }
-    .photo-thumb { height: 65px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-    .photo-lbl { font-size: 10.5px; font-weight: 600; padding: 5px; border-top: 1px solid var(--slate-200); }
+    .photo-thumb { height: 60px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .photo-lbl { font-size: 10px; font-weight: 600; padding: 4px; border-top: 1px solid var(--slate-200); }
+
+    .grid-two-col {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 14px;
+    }
+
+    /* ------------------------------------------------------------- */
+    /* RESPONSIVIDADE MOBILE / TELAS PEQUENAS (max-width: 860px)    */
+    /* ------------------------------------------------------------- */
+    @media (max-width: 860px) {
+      aside.sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 280px;
+        transform: translateX(-100%);
+        box-shadow: 4px 0 16px rgba(0, 0, 0, 0.4);
+      }
+      aside.sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .btn-close-sidebar {
+        display: block;
+      }
+      .btn-menu-toggle {
+        display: inline-flex;
+      }
+      .breadcrumb-area span:first-child,
+      .breadcrumb-area span:nth-child(2) {
+        display: none;
+      }
+      .topbar-actions .tag-glass:first-child {
+        display: none;
+      }
+      .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .grid-two-col {
+        grid-template-columns: 1fr;
+      }
+      .pane-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .pane-header .btn {
+        width: 100%;
+      }
+      .url-chip {
+        max-width: 140px;
+      }
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+      .filter-grid button.btn {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- SIDEBAR FIXA NAVEGÁVEL -->
-  <aside class="sidebar">
+  <!-- OVERLAY PARA FECHAR O MENU NO MOBILE -->
+  <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+
+  <!-- SIDEBAR FIXA / DRAWER NO MOBILE -->
+  <aside id="sidebar" class="sidebar">
     <div class="brand-box">
-      <!-- LOGOTIPO OFICIAL SGS COM LINHAS DE ENQUADRAMENTO -->
-      <div class="brand-logo-container">
-        <svg width="58" height="26" viewBox="0 0 100 46" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Linhas de cruzamento Laranja SGS -->
-          <line x1="8" y1="38" x2="98" y2="38" stroke="#f36f21" stroke-width="2.5" stroke-linecap="square" />
-          <line x1="82" y1="5" x2="82" y2="44" stroke="#f36f21" stroke-width="2.5" stroke-linecap="square" />
-          <!-- Tipografia SGS em Cinza Oficial -->
-          <text x="7" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Impact, Arial, sans-serif" font-size="34" font-weight="900" fill="#77787b" letter-spacing="1">SGS</text>
-        </svg>
+      <div class="brand-main">
+        <div class="brand-logo-container">
+          <svg width="50" height="22" viewBox="0 0 100 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="8" y1="38" x2="98" y2="38" stroke="#f36f21" stroke-width="2.5" stroke-linecap="square" />
+            <line x1="82" y1="5" x2="82" y2="44" stroke="#f36f21" stroke-width="2.5" stroke-linecap="square" />
+            <text x="7" y="34" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Impact, Arial, sans-serif" font-size="34" font-weight="900" fill="#77787b" letter-spacing="1">SGS</text>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h2>Fuel-Retail 2.0</h2>
+          <p>Vistorias &amp; Qualidade</p>
+        </div>
       </div>
-      <div class="brand-text">
-        <h2>Fuel-Retail 2.0</h2>
-        <p>Vistorias &amp; Qualidade</p>
-      </div>
+      <button class="btn-close-sidebar" onclick="toggleSidebar(false)" aria-label="Fechar menu">✕</button>
     </div>
     
     <div class="nav-scroll">
@@ -508,7 +643,6 @@
       </div>
     </div>
 
-    <!-- RODAPÉ DA SIDEBAR -->
     <div class="sidebar-footer">
       <div class="user-pill-side">
         <div class="user-avatar-side">LR</div>
@@ -521,24 +655,25 @@
     </div>
   </aside>
 
-  <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
+  <!-- CONTEÚDO PRINCIPAL -->
   <main class="main-content">
     
-    <!-- BARRA SUPERIOR (TOPBAR) -->
     <header class="topbar">
-      <div class="breadcrumb-area">
-        <span style="opacity:0.8;">SGS Fuel-Retail 2.0</span> 
-        <span style="opacity:0.5;">/</span> 
-        <strong id="crumb-title">Dashboard Operacional</strong>
+      <div class="topbar-left">
+        <button class="btn-menu-toggle" onclick="toggleSidebar(true)" aria-label="Abrir menu">☰</button>
+        <div class="breadcrumb-area">
+          <span style="opacity:0.8;">SGS Fuel-Retail 2.0</span> 
+          <span style="opacity:0.5;">/</span> 
+          <strong id="crumb-title">Dashboard Operacional</strong>
+        </div>
       </div>
       <div class="topbar-actions">
-        <span class="tag-glass">Receita Federal 2026 Ready</span>
-        <span class="tag-glass tag-glass-icl">Trava ICL Ativa</span>
+        <span class="tag-glass">Receita 2026</span>
+        <span class="tag-glass tag-glass-icl">Trava ICL</span>
         <span class="tag-glass" style="background:rgba(16, 185, 129, 0.2); border-color:rgba(16, 185, 129, 0.4); color:#a7f3d0;">Online</span>
       </div>
     </header>
 
-    <!-- ÁREA DE VISUALIZAÇÃO DAS TELAS -->
     <div class="viewport">
 
       <!-- TELA 1: DASHBOARD -->
@@ -554,8 +689,8 @@
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Painel Operacional de Vistorias e Fiscalização</h3>
-                <p class="pane-sub">Acompanhamento de rotas, laudos pendentes de emissão e nível de conformidade legal.</p>
+                <h3 class="pane-title">Painel Operacional de Vistorias</h3>
+                <p class="pane-sub">Acompanhamento de rotas, laudos e nível de conformidade.</p>
               </div>
               <button class="btn btn-orange">+ Abrir Nova Requisição</button>
             </div>
@@ -583,33 +718,35 @@
               </div>
             </div>
 
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th style="width:12%;">OS</th>
-                  <th style="width:38%;">Razão Social / Estabelecimento</th>
-                  <th style="width:16%;">Bandeira</th>
-                  <th style="width:20%;">Técnico em Campo</th>
-                  <th style="width:14%; text-align:center;">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>#39560</strong></td>
-                  <td>AUTO POSTO BEM BOM DE DIADEMA LTDA</td>
-                  <td><span class="badge badge-orange">Raízen</span></td>
-                  <td>Lucas Diego Prado</td>
-                  <td style="text-align:center;"><button class="btn-table" onclick="navigate('vistoria', document.querySelectorAll('.nav-item')[4])">Auditar</button></td>
-                </tr>
-                <tr>
-                  <td><strong>#39564</strong></td>
-                  <td>POSTO VALE DO PARAIBA LTDA</td>
-                  <td><span class="badge badge-blue">Ipiranga</span></td>
-                  <td>Renato Aparecido de Oliveira</td>
-                  <td style="text-align:center;"><button class="btn-table">Auditar</button></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width:12%;">OS</th>
+                    <th style="width:38%;">Razão Social / Estabelecimento</th>
+                    <th style="width:16%;">Bandeira</th>
+                    <th style="width:20%;">Técnico em Campo</th>
+                    <th style="width:14%; text-align:center;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>#39560</strong></td>
+                    <td>AUTO POSTO BEM BOM DE DIADEMA LTDA</td>
+                    <td><span class="badge badge-orange">Raízen</span></td>
+                    <td>Lucas Diego Prado</td>
+                    <td style="text-align:center;"><button class="btn-table" onclick="navigate('vistoria', document.querySelectorAll('.nav-item')[4])">Auditar</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>#39564</strong></td>
+                    <td>POSTO VALE DO PARAIBA LTDA</td>
+                    <td><span class="badge badge-blue">Ipiranga</span></td>
+                    <td>Renato Aparecido de Oliveira</td>
+                    <td style="text-align:center;"><button class="btn-table">Auditar</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -622,13 +759,13 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/search</span>
             </div>
-            <span>Consulta Comercial &bull; Cotações</span>
+            <span>Consulta Comercial • Cotações</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Consulta de Cotações e Propostas Comerciais</h3>
-                <p class="pane-sub">Filtros combinados por empresa, número da cotação e centro operacional.</p>
+                <h3 class="pane-title">Consulta de Cotações</h3>
+                <p class="pane-sub">Filtros por empresa, número da cotação e centro.</p>
               </div>
               <button class="btn btn-orange">+ Nova Cotação</button>
             </div>
@@ -649,31 +786,33 @@
               <button class="btn btn-orange">Pesquisar</button>
             </div>
 
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Cotação</th>
-                  <th>Empresa Contratante</th>
-                  <th>Escopo do Serviço</th>
-                  <th>Status</th>
-                  <th style="text-align:center;">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>COT-2026-081</strong></td>
-                  <td>Raízen Combustíveis S.A.</td>
-                  <td>Coleta Sigilosa + Lab (35 postos)</td>
-                  <td><span class="badge badge-green">Aprovada</span></td>
-                  <td style="text-align:center;"><button class="btn-table">Ver Detalhes</button></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Cotação</th>
+                    <th>Empresa Contratante</th>
+                    <th>Escopo do Serviço</th>
+                    <th>Status</th>
+                    <th style="text-align:center;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>COT-2026-081</strong></td>
+                    <td>Raízen Combustíveis S.A.</td>
+                    <td>Coleta Sigilosa + Lab (35 postos)</td>
+                    <td><span class="badge badge-green">Aprovada</span></td>
+                    <td style="text-align:center;"><button class="btn-table">Ver Detalhes</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- TELA 3 & 4: USUÁRIOS & WIZARD -->
+      <!-- TELA 3: USUÁRIOS -->
       <div id="screen-usuarios" class="screen-pane">
         <div class="mockup-window">
           <div class="mockup-bar">
@@ -681,20 +820,20 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/user-control</span>
             </div>
-            <span>Controle de Acesso &bull; Wizard de Criação</span>
+            <span>Controle de Acesso • Wizard</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Controle de Usuários e Atribuições</h3>
-                <p class="pane-sub">Cadastro assistido com stepper visual de 2 etapas.</p>
+                <h3 class="pane-title">Controle de Usuários</h3>
+                <p class="pane-sub">Cadastro assistido com stepper de 2 etapas.</p>
               </div>
               <button class="btn btn-orange">+ Cadastrar Usuário</button>
             </div>
 
             <div style="background:#fff; border:1px solid var(--sgs-orange); border-radius:var(--radius-md); padding:14px; margin-bottom:14px;">
-              <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid var(--slate-100); padding-bottom:6px;">
-                <strong style="color:var(--sgs-orange); font-size:12px;">✦ WIZARD: Cadastrar Novo Usuário (Etapa 1 de 2: Dados Básicos)</strong>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid var(--slate-100); padding-bottom:6px; flex-wrap:wrap; gap:6px;">
+                <strong style="color:var(--sgs-orange); font-size:12px;">✦ WIZARD: Cadastrar Novo Usuário (Etapa 1 de 2)</strong>
                 <span class="badge badge-orange">Passo 1 de 2</span>
               </div>
               <div class="filter-grid" style="background:transparent; border:none; padding:0; margin-bottom:10px;">
@@ -715,32 +854,34 @@
                   <select class="field-input"><option>ADMIN FUEL</option></select>
                 </div>
               </div>
-              <div style="display:flex; justify-content:flex-end; gap:8px;">
+              <div style="display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap;">
                 <button class="btn btn-gray">Cancelar</button>
-                <button class="btn btn-orange" onclick="navigate('acessos', document.querySelectorAll('.nav-item')[9])">Avançar para Etapa 2 (Acessos) &rarr;</button>
+                <button class="btn btn-orange" onclick="navigate('acessos', document.querySelectorAll('.nav-item')[9])">Avançar para Etapa 2 &rarr;</button>
               </div>
             </div>
 
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>Centro Operacional</th>
-                  <th>Perfil</th>
-                  <th>E-mail</th>
-                  <th style="text-align:center;">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Lucas Diego Prado</strong></td>
-                  <td>Duque de Caxias - RJ</td>
-                  <td><span class="badge badge-blue">Técnico SG</span></td>
-                  <td>lucas.prado2@sgs.com</td>
-                  <td style="text-align:center;"><button class="btn-table">Editar</button></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Centro Operacional</th>
+                    <th>Perfil</th>
+                    <th>E-mail</th>
+                    <th style="text-align:center;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Lucas Diego Prado</strong></td>
+                    <td>Duque de Caxias - RJ</td>
+                    <td><span class="badge badge-blue">Técnico SG</span></td>
+                    <td>lucas.prado2@sgs.com</td>
+                    <td style="text-align:center;"><button class="btn-table">Editar</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -753,55 +894,57 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/service-center-control</span>
             </div>
-            <span>Infraestrutura &bull; Centros e Laboratórios SGS</span>
+            <span>Centros e Laboratórios SGS</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Laboratórios e Bases Operacionais SGS</h3>
-                <p class="pane-sub">Gestão de filiais, CNPJ emitente e e-mails de notificação CAP.</p>
+                <h3 class="pane-title">Laboratórios e Bases Operacionais</h3>
+                <p class="pane-sub">Gestão de filiais, CNPJ emitente e notificações.</p>
               </div>
               <button class="btn btn-orange">+ Novo Centro</button>
             </div>
 
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Centro / Filial</th>
-                  <th>Endereço</th>
-                  <th>Telefone</th>
-                  <th>Lista CAP</th>
-                  <th>CNPJ Filial</th>
-                  <th>Template</th>
-                  <th style="text-align:center;">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>São Caetano</strong></td>
-                  <td>Av. Goiás, 2600 - Galpão III</td>
-                  <td>(11) 2086-9090</td>
-                  <td><span class="badge badge-blue">cap.sp@sgs.com</span></td>
-                  <td>03.367.065/0014-82</td>
-                  <td><span class="badge badge-gray">TEMPLATE SP V2</span></td>
-                  <td style="text-align:center;"><button class="btn-table">Editar</button></td>
-                </tr>
-                <tr>
-                  <td><strong>Duque de Caxias</strong></td>
-                  <td>R. Manuel Do Espírito Santo, 26</td>
-                  <td>(21) 3654-0937</td>
-                  <td><span class="badge badge-blue">cap.rj@sgs.com</span></td>
-                  <td>03.367.065/0015-63</td>
-                  <td><span class="badge badge-gray">TEMPLATE RJ V1</span></td>
-                  <td style="text-align:center;"><button class="btn-table">Editar</button></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Centro / Filial</th>
+                    <th>Endereço</th>
+                    <th>Telefone</th>
+                    <th>Lista CAP</th>
+                    <th>CNPJ Filial</th>
+                    <th>Template</th>
+                    <th style="text-align:center;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>São Caetano</strong></td>
+                    <td>Av. Goiás, 2600 - Galpão III</td>
+                    <td>(11) 2086-9090</td>
+                    <td><span class="badge badge-blue">cap.sp@sgs.com</span></td>
+                    <td>03.367.065/0014-82</td>
+                    <td><span class="badge badge-gray">TEMPLATE SP V2</span></td>
+                    <td style="text-align:center;"><button class="btn-table">Editar</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Duque de Caxias</strong></td>
+                    <td>R. Manuel Do Espírito Santo, 26</td>
+                    <td>(21) 3654-0937</td>
+                    <td><span class="badge badge-blue">cap.rj@sgs.com</span></td>
+                    <td>03.367.065/0015-63</td>
+                    <td><span class="badge badge-gray">TEMPLATE RJ V1</span></td>
+                    <td style="text-align:center;"><button class="btn-table">Editar</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- TELA 6: ATRIBUIÇÃO DE ACESSOS -->
+      <!-- TELA 6: ACESSOS -->
       <div id="screen-acessos" class="screen-pane">
         <div class="mockup-window">
           <div class="mockup-bar">
@@ -809,24 +952,24 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/grant-user-access</span>
             </div>
-            <span>Segurança &bull; Matriz de Atribuição de Acessos</span>
+            <span>Matriz de Acessos</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Matriz de Permissões: Monica Alves Gonzalez</h3>
+                <h3 class="pane-title">Matriz de Permissões: Monica Alves</h3>
                 <p class="pane-sub">Login: <code>monica.alves</code> • Perfil: <strong>ADMIN FUEL</strong></p>
               </div>
               <button class="btn btn-green">Salvar Permissões</button>
             </div>
 
             <div class="banner banner-blue">
-              <span>🔒 <strong>Trava de Segurança ICL:</strong> Selecionar "Associado ICL" desabilita papéis de órgãos reguladores estaduais para assegurar o sigilo das vistorias.</span>
+              <span>🔒 <strong>Trava de Segurança ICL:</strong> Selecionar "Associado ICL" desabilita papéis de órgãos reguladores estaduais.</span>
             </div>
 
-            <div style="display:grid; grid-template-columns: 3fr 2fr; gap:16px;">
+            <div class="grid-two-col">
               <div style="background:#fff; border:1px solid var(--slate-300); border-radius:var(--radius-md); padding:14px;">
-                <label class="field-label" style="margin-bottom:6px; display:block;">Clientes Vinculados com Busca Dinâmica</label>
+                <label class="field-label" style="margin-bottom:6px; display:block;">Clientes Vinculados</label>
                 <div style="display:flex; flex-wrap:wrap; gap:6px; padding:8px; border:1px solid var(--slate-200); border-radius:var(--radius-sm); min-height:80px; align-content:flex-start;">
                   <span class="badge badge-orange">RAÍZEN ✕</span>
                   <span class="badge badge-orange">VIBRA ✕</span>
@@ -850,7 +993,7 @@
         </div>
       </div>
 
-      <!-- TELA 7: REQUISIÇÕES & CARGA -->
+      <!-- TELA 7: REQUISIÇÕES -->
       <div id="screen-requisicoes" class="screen-pane">
         <div class="mockup-window">
           <div class="mockup-bar">
@@ -858,49 +1001,53 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/request-fuel-inspection</span>
             </div>
-            <span>Entrada de Demandas &bull; Upload em Lote e Modelo</span>
+            <span>Upload em Lote</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
                 <h3 class="pane-title">Abertura de Requisições de Vistoria</h3>
-                <p class="pane-sub">Upload massivo em lote ou cadastro manual unitário de postos.</p>
+                <p class="pane-sub">Upload massivo em lote ou cadastro manual unitário.</p>
               </div>
               <span class="badge badge-purple">CNPJ Alfanumérico Habilitado</span>
             </div>
 
             <div style="border:2px dashed var(--sgs-orange); background:var(--sgs-orange-surface); border-radius:var(--radius-lg); padding:20px; text-align:center; margin-bottom:16px;">
-              <strong style="color:var(--sgs-orange); font-size:13px;">📁 Arraste aqui a planilha de postos para carga (.xlsx ou .csv)</strong>
-              <p style="font-size:11px; color:var(--slate-600); margin:4px 0 10px 0;">Compatível com o novo formato de CNPJ com letras e números da Receita Federal.</p>
-              <button class="btn btn-orange">Selecionar Arquivo</button>
-              <button class="btn btn-gray" style="margin-left:8px;">Baixar Arquivo Modelo</button>
+              <strong style="color:var(--sgs-orange); font-size:13px; display:block;">📁 Arraste a planilha de postos (.xlsx ou .csv)</strong>
+              <p style="font-size:11px; color:var(--slate-600); margin:4px 0 10px 0;">Compatível com o formato alfanumérico da Receita Federal.</p>
+              <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-orange">Selecionar Arquivo</button>
+                <button class="btn btn-gray">Baixar Arquivo Modelo</button>
+              </div>
             </div>
 
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Data Carga</th>
-                  <th>Qtd Registros</th>
-                  <th>Usuário</th>
-                  <th>Tipo Envio</th>
-                  <th style="text-align:center;">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>15/07/2026 14:20</td>
-                  <td>4 postos</td>
-                  <td>Marco Meira</td>
-                  <td>Em Lote</td>
-                  <td style="text-align:center;"><span class="badge badge-green">✓ Validado com Sucesso</span></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Data Carga</th>
+                    <th>Qtd Registros</th>
+                    <th>Usuário</th>
+                    <th>Tipo Envio</th>
+                    <th style="text-align:center;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>15/07/2026 14:20</td>
+                    <td>4 postos</td>
+                    <td>Marco Meira</td>
+                    <td>Em Lote</td>
+                    <td style="text-align:center;"><span class="badge badge-green">✓ Validado</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- TELA 8: ESCALONAMENTO TÉCNICO -->
+      <!-- TELA 8: ESCALONAMENTO -->
       <div id="screen-escalonamento" class="screen-pane">
         <div class="mockup-window">
           <div class="mockup-bar">
@@ -908,49 +1055,51 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/technical-escalation</span>
             </div>
-            <span>Roteirização &bull; Escalonamento Técnico</span>
+            <span>Escalonamento Técnico</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Escalonamento de Técnicos e Agendamento de Janela</h3>
-                <p class="pane-sub">Distribuição de rotas de campo e gestão de janela autorizada de vistoria.</p>
+                <h3 class="pane-title">Escalonamento de Técnicos</h3>
+                <p class="pane-sub">Distribuição de rotas de campo e agendamentos.</p>
               </div>
               <button class="btn btn-orange">Escalonar em Lote</button>
             </div>
 
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>OS</th>
-                  <th>Posto / CNPJ</th>
-                  <th>Cidade / UF</th>
-                  <th>Técnico Designado</th>
-                  <th style="text-align:center;">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>#2856</strong></td>
-                  <td>MARTINELI AUTO POSTO LTDA<br><span style="color:#64748b; font-size:11px;">46.892.261/0001-64</span></td>
-                  <td>São José do Rio Preto - SP</td>
-                  <td>Renato Aparecido de Oliveira</td>
-                  <td style="text-align:center;"><button class="btn-table">Reagendar</button></td>
-                </tr>
-                <tr>
-                  <td><strong>#2857</strong></td>
-                  <td>CANEO &amp; CANEO AUTO POSTO LTDA<br><span style="color:#64748b; font-size:11px;">72.934.722/0001-24</span></td>
-                  <td>Cedral - SP</td>
-                  <td>Renato Aparecido de Oliveira</td>
-                  <td style="text-align:center;"><button class="btn-table">Reagendar</button></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>OS</th>
+                    <th>Posto / CNPJ</th>
+                    <th>Cidade / UF</th>
+                    <th>Técnico Designado</th>
+                    <th style="text-align:center;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>#2856</strong></td>
+                    <td>MARTINELI AUTO POSTO LTDA<br><span style="color:#64748b; font-size:11px;">46.892.261/0001-64</span></td>
+                    <td>São José do Rio Preto - SP</td>
+                    <td>Renato Aparecido de Oliveira</td>
+                    <td style="text-align:center;"><button class="btn-table">Reagendar</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>#2857</strong></td>
+                    <td>CANEO &amp; CANEO AUTO POSTO LTDA<br><span style="color:#64748b; font-size:11px;">72.934.722/0001-24</span></td>
+                    <td>Cedral - SP</td>
+                    <td>Renato Aparecido de Oliveira</td>
+                    <td style="text-align:center;"><button class="btn-table">Reagendar</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- TELA 9 & 10: VISTORIA & FOTO DE MEDIÇÃO -->
+      <!-- TELA 9: VISTORIA -->
       <div id="screen-vistoria" class="screen-pane">
         <div class="mockup-window">
           <div class="mockup-bar">
@@ -958,19 +1107,19 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/confidential-work-queue/11090</span>
             </div>
-            <span>Vistoria de Campo &bull; Coleta Sigilosa &amp; Fotos RF-09</span>
+            <span>Vistoria de Campo • RF-09</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Coleta Sigilosa #11090 • Ipiranga / Pilar do Tietê</h3>
+                <h3 class="pane-title">Coleta Sigilosa #11090 • Ipiranga</h3>
                 <p class="pane-sub">CENTRO AUTOMOTIVO PILAR DO TIETÊ LTDA • São Paulo - SP</p>
               </div>
-              <button class="btn btn-green">Submeter Vistoria Concluída</button>
+              <button class="btn btn-green">Submeter Vistoria</button>
             </div>
 
             <div class="banner banner-red">
-              <span>⚠️ <strong>Solicitação de Correção do Gestor:</strong> "Favor retificar a vinculação da OS para categoria ICL e reconfirmar o volume aferido no bico 22."</span>
+              <span>⚠️ <strong>Aviso do Gestor:</strong> Favor retificar a vinculação da OS para categoria ICL e reconfirmar o bico 22.</span>
             </div>
 
             <div class="filter-grid" style="background:#fff;">
@@ -979,7 +1128,7 @@
                 <input type="text" class="field-input" value="Bomba 04 / Bico 22">
               </div>
               <div class="field-group">
-                <label class="field-label">Temperatura Amostra</label>
+                <label class="field-label">Temperatura</label>
                 <input type="text" class="field-input" value="22.0 °C">
               </div>
               <div class="field-group">
@@ -987,14 +1136,14 @@
                 <input type="text" class="field-input" value="24.000 L">
               </div>
               <div class="field-group">
-                <label class="field-label">Defasagem Calculada</label>
-                <div style="background:#dcfce7; color:#15803d; font-weight:bold; height:32px; display:flex; align-items:center; justify-content:center; border-radius:var(--radius-sm);">
-                  0,189 L (0,784%) • CONFORME
+                <label class="field-label">Defasagem</label>
+                <div style="background:#dcfce7; color:#15803d; font-weight:bold; height:34px; display:flex; align-items:center; justify-content:center; border-radius:var(--radius-sm); font-size:11px;">
+                  0,189 L (0,784%) • OK
                 </div>
               </div>
             </div>
 
-            <label class="field-label" style="display:block; margin-bottom:6px;">Evidências Fotográficas (Inclui Medição de Tanque/Régua - RF-09):</label>
+            <label class="field-label" style="display:block; margin-bottom:6px;">Evidências Fotográficas:</label>
             <div class="photo-deck">
               <div class="photo-item">
                 <div class="photo-thumb">🏪</div>
@@ -1014,14 +1163,14 @@
               </div>
               <div class="photo-item" style="border:2px solid var(--slate-600); background:#f8fafc;">
                 <div class="photo-thumb" style="color:var(--slate-700); font-weight:bold;">📏</div>
-                <div class="photo-lbl" style="color:var(--slate-700); font-weight:bold;">RF-09: Medição Régua</div>
+                <div class="photo-lbl" style="color:var(--slate-700); font-weight:bold;">Régua (RF-09)</div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- TELA 11: LAUDOS & TRAVA ICL -->
+      <!-- TELA 11: LAUDOS -->
       <div id="screen-laudos" class="screen-pane">
         <div class="mockup-window">
           <div class="mockup-bar">
@@ -1029,59 +1178,61 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/manage-confidential-inspection</span>
             </div>
-            <span>Emissão Oficial &bull; Trava ICL (RF-06) e Laudo Quantidade (RF-08)</span>
+            <span>Emissão de Laudos • Trava ICL</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Emissão e Validação de Laudos Técnicos</h3>
-                <p class="pane-sub">Controle estrito para evitar emissão mista entre grupos conveniados e distribuidores.</p>
+                <h3 class="pane-title">Emissão e Validação de Laudos</h3>
+                <p class="pane-sub">Controle restrito por grupo e convênio.</p>
               </div>
-              <button class="btn btn-green">📑 Emitir Laudo(s) Selecionado(s)</button>
+              <button class="btn btn-green">📑 Emitir Selecionados</button>
             </div>
 
             <div class="banner banner-blue">
-              <span>🔒 <strong>Trava ICL Ativa (RF-06):</strong> Não é permitido selecionar nem emitir laudos do convênio ICL com postos de distribuidoras comuns no mesmo arquivo.</span>
+              <span>🔒 <strong>Trava ICL:</strong> Não é permitido emitir laudos do convênio ICL junto com postos comuns.</span>
             </div>
 
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th style="width:30px;"><input type="checkbox" checked></th>
-                  <th>OS</th>
-                  <th>Posto / CNPJ</th>
-                  <th>Cliente</th>
-                  <th>Tipo de Laudo</th>
-                  <th>Resultado</th>
-                  <th style="text-align:center;">Decisão</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="background:#fff7ed;">
-                  <td><input type="checkbox" checked></td>
-                  <td><strong>#39560</strong></td>
-                  <td>AUTO POSTO BEM BOM DE DIADEMA</td>
-                  <td><span class="badge badge-orange">Raízen</span></td>
-                  <td><span class="badge badge-purple">Qualidade + Qtd</span></td>
-                  <td><span class="badge badge-green">✓ Conforme</span></td>
-                  <td style="text-align:center;"><button class="btn-table" style="color:var(--green-600);">Aprovar</button></td>
-                </tr>
-                <tr>
-                  <td><input type="checkbox"></td>
-                  <td><strong>#39562</strong></td>
-                  <td>POSTO VALE DO PARAÍBA LTDA</td>
-                  <td><span class="badge badge-blue">PROTESTE</span></td>
-                  <td><span class="badge badge-blue">Qtd Apenas (RF-08)</span></td>
-                  <td><span class="badge badge-green">✓ Conforme</span></td>
-                  <td style="text-align:center;"><button class="btn-table">Visualizar</button></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width:30px;"><input type="checkbox" checked></th>
+                    <th>OS</th>
+                    <th>Posto / CNPJ</th>
+                    <th>Cliente</th>
+                    <th>Tipo de Laudo</th>
+                    <th>Resultado</th>
+                    <th style="text-align:center;">Decisão</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="background:#fff7ed;">
+                    <td><input type="checkbox" checked></td>
+                    <td><strong>#39560</strong></td>
+                    <td>AUTO POSTO BEM BOM DE DIADEMA</td>
+                    <td><span class="badge badge-orange">Raízen</span></td>
+                    <td><span class="badge badge-purple">Qualidade + Qtd</span></td>
+                    <td><span class="badge badge-green">✓ Conforme</span></td>
+                    <td style="text-align:center;"><button class="btn-table" style="color:var(--green-600);">Aprovar</button></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox"></td>
+                    <td><strong>#39562</strong></td>
+                    <td>POSTO VALE DO PARAÍBA LTDA</td>
+                    <td><span class="badge badge-blue">PROTESTE</span></td>
+                    <td><span class="badge badge-blue">Qtd (RF-08)</span></td>
+                    <td><span class="badge badge-green">✓ Conforme</span></td>
+                    <td style="text-align:center;"><button class="btn-table">Visualizar</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- TELA 12: CARGA ANP MANUAL / LOTE -->
+      <!-- TELA 12: CARGA ANP -->
       <div id="screen-cargaanp" class="screen-pane">
         <div class="mockup-window">
           <div class="mockup-bar">
@@ -1089,22 +1240,22 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/manage-anp-load</span>
             </div>
-            <span>Regulatório ANP &bull; Inclusão Unitária [RF-01] &amp; Novo CNPJ [RF-02]</span>
+            <span>Regulatório ANP</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Base de Postos ANP • Cadastro Unitário e Lote</h3>
-                <p class="pane-sub">Permite cadastrar um único estabelecimento sem exigir subida de carga inteira.</p>
+                <h3 class="pane-title">Base de Postos ANP</h3>
+                <p class="pane-sub">Cadastro Unitário e Lote.</p>
               </div>
               <span class="badge badge-green">Padrão Receita 2026</span>
             </div>
 
             <div style="background:#ffffff; border:1px solid var(--green-600); border-radius:var(--radius-md); padding:12px; margin-bottom:14px;">
-              <strong style="color:var(--green-600); font-size:12px; margin-bottom:8px; display:block;">⚡ ABA ATIVA: Cadastro Manual de 1 CNPJ por vez [RF-01]</strong>
+              <strong style="color:var(--green-600); font-size:12px; margin-bottom:8px; display:block;">⚡ Cadastro Manual Unitário [RF-01]</strong>
               <div class="filter-grid" style="background:transparent; border:none; padding:0; margin-bottom:6px;">
                 <div class="field-group">
-                  <label class="field-label">CNPJ (Aceita Letras - RF-02)*</label>
+                  <label class="field-label">CNPJ Alfanumérico</label>
                   <input type="text" class="field-input" value="12.ABC.345/0001-99" style="font-weight:bold;">
                 </div>
                 <div class="field-group">
@@ -1112,36 +1263,38 @@
                   <input type="text" class="field-input" value="AUTO POSTO METRÓPOLE LTDA">
                 </div>
                 <div class="field-group">
-                  <label class="field-label">Bandeira ANP (RF-03)</label>
-                  <select class="field-input"><option>IPIRANGA</option><option>RAÍZEN</option><option>BANDEIRA BRANCA</option></select>
+                  <label class="field-label">Bandeira ANP</label>
+                  <select class="field-input"><option>IPIRANGA</option><option>RAÍZEN</option><option>BRANCA</option></select>
                 </div>
-                <button class="btn btn-green" style="height:32px;">Salvar Posto Unitário</button>
+                <button class="btn btn-green">Salvar Posto</button>
               </div>
             </div>
 
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>CNPJ Alfanumérico</th>
-                  <th>Razão Social</th>
-                  <th>Bandeira</th>
-                  <th style="text-align:center;">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>12.ABC.345/0001-99</strong></td>
-                  <td>AUTO POSTO METRÓPOLE LTDA</td>
-                  <td>IPIRANGA</td>
-                  <td style="text-align:center;"><span class="badge badge-green">✓ Validado ANP</span></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>CNPJ Alfanumérico</th>
+                    <th>Razão Social</th>
+                    <th>Bandeira</th>
+                    <th style="text-align:center;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>12.ABC.345/0001-99</strong></td>
+                    <td>AUTO POSTO METRÓPOLE LTDA</td>
+                    <td>IPIRANGA</td>
+                    <td style="text-align:center;"><span class="badge badge-green">✓ Validado</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- TELA 13: RELATÓRIOS CONSOLIDADOS (>2.000 LINHAS) -->
+      <!-- TELA 13: RELATÓRIOS -->
       <div id="screen-relatorios" class="screen-pane">
         <div class="mockup-window">
           <div class="mockup-bar">
@@ -1149,22 +1302,22 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/consolidated-report</span>
             </div>
-            <span>Business Intelligence &bull; Streaming Assíncrono [RF-10]</span>
+            <span>Business Intelligence • RF-10</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Relatório Consolidado de Vistorias e Faturamento</h3>
-                <p class="pane-sub">Exportação massiva com manutenção de fórmulas matemáticas e zero congelamento de navegador.</p>
+                <h3 class="pane-title">Relatório Consolidado de Vistorias</h3>
+                <p class="pane-sub">Exportação massiva com fórmulas matemáticas intactas.</p>
               </div>
-              <button class="btn btn-green">📥 Exportar Excel (&gt;2.000 Linhas)</button>
+              <button class="btn btn-green">📥 Exportar Excel (&gt;2k lin)</button>
             </div>
 
             <div class="kpi-row">
               <div class="kpi-card">
                 <div class="kpi-title">Linhas Filtradas</div>
                 <div class="kpi-num" style="color:var(--slate-700);">3.480</div>
-                <div class="kpi-desc">&gt;2.000 Linhas (RF-10)</div>
+                <div class="kpi-desc">&gt;2.000 Linhas</div>
               </div>
               <div class="kpi-card">
                 <div class="kpi-title">Laudos Emitidos</div>
@@ -1179,40 +1332,42 @@
               <div class="kpi-card">
                 <div class="kpi-title">Tempo Resposta</div>
                 <div class="kpi-num" style="color:var(--sgs-orange);">1.4s</div>
-                <div class="kpi-desc">Zero Timeout HTTP</div>
+                <div class="kpi-desc">Sem Timeout</div>
               </div>
             </div>
 
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Data Cotação</th>
-                  <th>Nº Proposta</th>
-                  <th>Centro SGS</th>
-                  <th>Cliente</th>
-                  <th>Qtd Postos</th>
-                  <th style="text-align:center;">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>12/07/2026</td>
-                  <td><strong>COT-2026-8891</strong></td>
-                  <td>São Caetano - SP</td>
-                  <td>Raízen Combustíveis</td>
-                  <td>45 postos</td>
-                  <td style="text-align:center;"><span class="badge badge-green">Faturado</span></td>
-                </tr>
-                <tr>
-                  <td>14/07/2026</td>
-                  <td><strong>COT-2026-8904</strong></td>
-                  <td>Duque de Caxias - RJ</td>
-                  <td>Vibra Energia</td>
-                  <td>120 postos</td>
-                  <td style="text-align:center;"><span class="badge badge-purple">Processando</span></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Data Cotação</th>
+                    <th>Nº Proposta</th>
+                    <th>Centro SGS</th>
+                    <th>Cliente</th>
+                    <th>Qtd Postos</th>
+                    <th style="text-align:center;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>12/07/2026</td>
+                    <td><strong>COT-2026-8891</strong></td>
+                    <td>São Caetano - SP</td>
+                    <td>Raízen Combustíveis</td>
+                    <td>45 postos</td>
+                    <td style="text-align:center;"><span class="badge badge-green">Faturado</span></td>
+                  </tr>
+                  <tr>
+                    <td>14/07/2026</td>
+                    <td><strong>COT-2026-8904</strong></td>
+                    <td>Duque de Caxias - RJ</td>
+                    <td>Vibra Energia</td>
+                    <td>120 postos</td>
+                    <td style="text-align:center;"><span class="badge badge-purple">Processando</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -1225,13 +1380,13 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/fuel-client/handle</span>
             </div>
-            <span>Comercial &bull; Gestão de Clientes e Saldos</span>
+            <span>Gestão de Clientes</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Cadastro e Parâmetros Comerciais do Cliente</h3>
-                <p class="pane-sub">Configuração de cotas de vistorias emergenciais e templates vinculados.</p>
+                <h3 class="pane-title">Cadastro Comercial de Clientes</h3>
+                <p class="pane-sub">Configuração de cotas de vistorias emergenciais.</p>
               </div>
               <button class="btn btn-green">Salvar Cliente</button>
             </div>
@@ -1242,25 +1397,17 @@
                 <input type="text" class="field-input" value="RAÍZEN COMBUSTÍVEIS S.A.">
               </div>
               <div class="field-group">
-                <label class="field-label">Bandeira Vinculada (RF-03)</label>
+                <label class="field-label">Bandeira Vinculada</label>
                 <select class="field-input"><option>SHELL / RAÍZEN</option><option>VIBRA</option></select>
               </div>
               <div class="field-group">
-                <label class="field-label">Template de Cotação</label>
+                <label class="field-label">Template</label>
                 <input type="text" class="field-input" value="TMP-RAIZEN-2026">
               </div>
               <div class="field-group">
                 <label class="field-label">E-mail Operacional</label>
                 <input type="text" class="field-input" value="operacoes@raizen.com">
               </div>
-            </div>
-
-            <div style="background:var(--slate-50); border:1px solid var(--slate-300); border-radius:var(--radius-md); padding:12px; display:flex; justify-content:space-between; align-items:center;">
-              <div>
-                <label style="font-weight:bold; font-size:12px;"><input type="checkbox" checked> Saldo Emergencial Ilimitado</label>
-                <div style="font-size:11px; color:var(--slate-600); margin-top:2px;">Permite abrir chamados de vistoria sigilosa com prioridade máxima.</div>
-              </div>
-              <span class="badge badge-green" style="font-size:11px; padding:4px 10px;">Saldo Anual Ilimitado</span>
             </div>
           </div>
         </div>
@@ -1274,51 +1421,46 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/fuel-profile</span>
             </div>
-            <span>Laboratório &bull; Limites Regulatórios ANP [RF-04]</span>
+            <span>Limites Regulatórios ANP</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
                 <h3 class="pane-title">Parametrização Laboratorial ANP [RF-04]</h3>
-                <p class="pane-sub">Configuração de tolerâncias conforme atualizações normativas de combustíveis.</p>
+                <p class="pane-sub">Configuração de tolerâncias conforme normas vigentes.</p>
               </div>
-              <button class="btn btn-orange">+ Novo Parâmetro ANP</button>
+              <button class="btn btn-orange">+ Novo Parâmetro</button>
             </div>
 
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Ensaio / Parâmetro</th>
-                  <th>Norma Técnica</th>
-                  <th>Faixa / Limite Permitido</th>
-                  <th>Status</th>
-                  <th style="text-align:center;">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Teor de Etanol Anidro (Gasolina C)</strong></td>
-                  <td>NBR 13992</td>
-                  <td><strong>27% ± 1%</strong> (26,0% a 28,0%)</td>
-                  <td><span class="badge badge-green">Vigente 2026</span></td>
-                  <td style="text-align:center;"><button class="btn-table">Editar Limite</button></td>
-                </tr>
-                <tr>
-                  <td><strong>Teor de Biodiesel (Óleo Diesel B)</strong></td>
-                  <td>NBR 15764</td>
-                  <td><strong>14% vol (B14)</strong></td>
-                  <td><span class="badge badge-green">Vigente 2026</span></td>
-                  <td style="text-align:center;"><button class="btn-table">Editar Limite</button></td>
-                </tr>
-                <tr>
-                  <td><strong>Massa Específica a 20°C</strong></td>
-                  <td>NBR 7148</td>
-                  <td>Mínimo <strong>715,0 kg/m³</strong></td>
-                  <td><span class="badge badge-green">Vigente 2026</span></td>
-                  <td style="text-align:center;"><button class="btn-table">Editar Limite</button></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Ensaio / Parâmetro</th>
+                    <th>Norma</th>
+                    <th>Limite Permitido</th>
+                    <th>Status</th>
+                    <th style="text-align:center;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Teor de Etanol Anidro</strong></td>
+                    <td>NBR 13992</td>
+                    <td><strong>27% ± 1%</strong></td>
+                    <td><span class="badge badge-green">Vigente</span></td>
+                    <td style="text-align:center;"><button class="btn-table">Editar</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Teor de Biodiesel</strong></td>
+                    <td>NBR 15764</td>
+                    <td><strong>14% vol (B14)</strong></td>
+                    <td><span class="badge badge-green">Vigente</span></td>
+                    <td style="text-align:center;"><button class="btn-table">Editar</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -1331,37 +1473,39 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/upload-from-to</span>
             </div>
-            <span>Integração &bull; Mapeamento DE-PARA Postos x ANP</span>
+            <span>Mapeamento DE-PARA</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
                 <h3 class="pane-title">Tabela de Conciliação DE-PARA</h3>
-                <p class="pane-sub">Correlaciona código interno do distribuidor com o código oficial de registro ANP.</p>
+                <p class="pane-sub">Código da distribuidora x Registro oficial ANP.</p>
               </div>
-              <button class="btn btn-orange">Upload Nova Tabela</button>
+              <button class="btn btn-orange">Upload Tabela</button>
             </div>
 
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Cód. Interno Distribuidor</th>
-                  <th>CNPJ do Estabelecimento</th>
-                  <th>Razão Social Cadastrada</th>
-                  <th>Registro ANP</th>
-                  <th style="text-align:center;">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>CL-990812</strong></td>
-                  <td>34.855.093/0001-58</td>
-                  <td>CENTRO AUTOMOTIVO PILAR DO TIETÊ</td>
-                  <td><strong>ANP-SP-44109</strong></td>
-                  <td style="text-align:center;"><span class="badge badge-green">Conciliado</span></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Cód. Interno</th>
+                    <th>CNPJ Estabelecimento</th>
+                    <th>Razão Social</th>
+                    <th>Registro ANP</th>
+                    <th style="text-align:center;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>CL-990812</strong></td>
+                    <td>34.855.093/0001-58</td>
+                    <td>CENTRO AUTOMOTIVO PILAR DO TIETÊ</td>
+                    <td><strong>ANP-SP-44109</strong></td>
+                    <td style="text-align:center;"><span class="badge badge-green">Conciliado</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -1374,41 +1518,37 @@
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
               <span class="url-chip">https://services.br.sgs.com/ibm-profile</span>
             </div>
-            <span>Integração Corporativa &bull; IBM Profile</span>
+            <span>IBM Profile</span>
           </div>
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Vínculos de Identidade Corporativa IBM</h3>
-                <p class="pane-sub">Relação de CNPJs, e-mails de notificação e identificadores exclusivos.</p>
+                <h3 class="pane-title">Identidade Corporativa IBM</h3>
+                <p class="pane-sub">Relação de CNPJs e identificadores de integração.</p>
               </div>
               <button class="btn btn-orange">+ Novo Vínculo</button>
             </div>
 
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>CNPJ Posto</th>
-                  <th>E-mail de Notificação</th>
-                  <th>Identificador IBM</th>
-                  <th style="text-align:center;">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>10.665.534/0001-90</strong></td>
-                  <td>fuelretailsgs@gmail.com</td>
-                  <td><span class="badge badge-blue">1034106</span></td>
-                  <td style="text-align:center;"><button class="btn-table">Editar</button></td>
-                </tr>
-                <tr>
-                  <td><strong>15.275.540/0003-17</strong></td>
-                  <td>operacoes.sp@posto.com.br</td>
-                  <td><span class="badge badge-blue">11</span></td>
-                  <td style="text-align:center;"><button class="btn-table">Editar</button></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>CNPJ Posto</th>
+                    <th>E-mail de Notificação</th>
+                    <th>Identificador IBM</th>
+                    <th style="text-align:center;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>10.665.534/0001-90</strong></td>
+                    <td>fuelretailsgs@gmail.com</td>
+                    <td><span class="badge badge-blue">1034106</span></td>
+                    <td style="text-align:center;"><button class="btn-table">Editar</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -1416,8 +1556,19 @@
     </div>
   </main>
 
-  <!-- SCRIPT DE NAVEGAÇÃO INTERATIVA -->
   <script>
+    function toggleSidebar(open) {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      if (open) {
+        sidebar.classList.add('mobile-open');
+        overlay.classList.add('active');
+      } else {
+        sidebar.classList.remove('mobile-open');
+        overlay.classList.remove('active');
+      }
+    }
+
     function navigate(screenKey, element) {
       document.querySelectorAll('.screen-pane').forEach(pane => {
         pane.classList.remove('visible');
@@ -1434,6 +1585,11 @@
         element.classList.add('active');
         const cleanTitle = element.innerText.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
         document.getElementById('crumb-title').innerText = cleanTitle;
+      }
+
+      // Fecha o drawer automaticamente ao selecionar uma tela no mobile
+      if (window.innerWidth <= 860) {
+        toggleSidebar(false);
       }
     }
   </script>
