@@ -596,6 +596,9 @@
       <div class="nav-item" onclick="navigate('cotacoes', this)">
         <span class="icon">📑</span> Consulta de Cotações
       </div>
+      <div class="nav-item" onclick="navigate('dashboardcaracterizada', this)">
+        <span class="icon">🛡️</span> Dashboard Caracterizada
+      </div>
 
       <div class="nav-group-title">Operações &amp; Auditoria</div>
       <div class="nav-item" onclick="navigate('requisicoes', this)">
@@ -812,6 +815,71 @@
         </div>
       </div>
 
+      <!-- TELA 2B: DASHBOARD CARACTERIZADA -->
+      <div id="screen-dashboardcaracterizada" class="screen-pane">
+        <div class="mockup-window">
+          <div class="mockup-bar">
+            <div class="browser-dots">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+              <span class="url-chip">https://services.br.sgs.com/characterized-dashboard</span>
+            </div>
+            <span>Dashboard Inspeção Caracterizada</span>
+          </div>
+          <div class="pane-content">
+            <div class="pane-header">
+              <div>
+                <h3 class="pane-title">Painel de Inspeção Caracterizada</h3>
+                <p class="pane-sub">Estrutura equivalente ao dashboard sigiloso — filtros e indicadores próprios da vistoria ostensiva.</p>
+              </div>
+              <button class="btn btn-green">📥 Gerar Arquivo</button>
+            </div>
+
+            <div class="banner banner-blue">
+              <span>ℹ️ Estrutura similar ao Dashboard Sigiloso, replicada conforme documentação — critérios de aceite e indicadores finais ainda a confirmar com o cliente (pendência L02 / Q29).</span>
+            </div>
+
+            <div class="filter-grid">
+              <div class="field-group">
+                <label class="field-label">Cliente</label>
+                <select class="field-input"><option>Ipiranga</option><option>Raízen</option><option>ANP</option></select>
+              </div>
+              <div class="field-group">
+                <label class="field-label">UF</label>
+                <select class="field-input"><option>SP</option><option>RJ</option></select>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Período</label>
+                <input type="text" class="field-input" placeholder="dd/mm/aaaa - dd/mm/aaaa">
+              </div>
+              <button class="btn btn-orange">Pesquisar</button>
+            </div>
+
+            <div class="kpi-row">
+              <div class="kpi-card">
+                <div class="kpi-title">Inspeções no Mês</div>
+                <div class="kpi-num" style="color:var(--sgs-orange);">86</div>
+                <div class="kpi-desc">Visitas ostensivas</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-title">Visita Não Autorizada</div>
+                <div class="kpi-num" style="color:var(--red-600);">3</div>
+                <div class="kpi-desc">Tipo de observação exclusivo</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-title">Recusa de Assinatura</div>
+                <div class="kpi-num" style="color:var(--red-600);">2</div>
+                <div class="kpi-desc">Tipo de observação exclusivo</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-title">Conformidade ANP</div>
+                <div class="kpi-num" style="color:var(--green-600);">94.2%</div>
+                <div class="kpi-desc">✓ Padrão Legal</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- TELA 3: USUÁRIOS -->
       <div id="screen-usuarios" class="screen-pane">
         <div class="mockup-window">
@@ -831,7 +899,7 @@
               <button class="btn btn-orange">+ Cadastrar Usuário</button>
             </div>
 
-            <div style="background:#fff; border:1px solid var(--sgs-orange); border-radius:var(--radius-md); padding:14px; margin-bottom:14px;">
+            <div id="wizard-etapa1" style="background:#fff; border:1px solid var(--sgs-orange); border-radius:var(--radius-md); padding:14px; margin-bottom:14px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid var(--slate-100); padding-bottom:6px; flex-wrap:wrap; gap:6px;">
                 <strong style="color:var(--sgs-orange); font-size:12px;">✦ WIZARD: Cadastrar Novo Usuário (Etapa 1 de 2)</strong>
                 <span class="badge badge-orange">Passo 1 de 2</span>
@@ -846,17 +914,55 @@
                   <input type="text" class="field-input" value="carlos.trindade@sgs.com">
                 </div>
                 <div class="field-group">
+                  <label class="field-label">Função</label>
+                  <select class="field-input"><option>Analista de Auditoria</option></select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Setor</label>
+                  <select class="field-input"><option>Operações Fuel-Retail</option></select>
+                </div>
+                <div class="field-group">
                   <label class="field-label">Centro de Serviço</label>
                   <select class="field-input"><option>São Caetano</option></select>
                 </div>
                 <div class="field-group">
-                  <label class="field-label">Perfil Base</label>
+                  <label class="field-label">Tipo de Perfil</label>
                   <select class="field-input"><option>ADMIN FUEL</option></select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Telefone</label>
+                  <input type="text" class="field-input" placeholder="(11) 0000-0000">
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Celular</label>
+                  <input type="text" class="field-input" placeholder="(11) 00000-0000">
                 </div>
               </div>
               <div style="display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap;">
                 <button class="btn btn-gray">Cancelar</button>
-                <button class="btn btn-orange" onclick="navigate('acessos', document.querySelectorAll('.nav-item')[9])">Avançar para Etapa 2 &rarr;</button>
+                <button class="btn btn-orange" onclick="document.getElementById('wizard-etapa1').style.display='none'; document.getElementById('wizard-etapa2').style.display='block';">Avançar para Etapa 2 &rarr;</button>
+              </div>
+            </div>
+
+            <div id="wizard-etapa2" style="display:none; background:#fff; border:1px solid var(--sgs-orange); border-radius:var(--radius-md); padding:14px; margin-bottom:14px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid var(--slate-100); padding-bottom:6px; flex-wrap:wrap; gap:6px;">
+                <strong style="color:var(--sgs-orange); font-size:12px;">✦ WIZARD: Credenciais de Acesso (Etapa 2 de 2)</strong>
+                <span class="badge badge-orange">Passo 2 de 2</span>
+              </div>
+              <p class="pane-sub" style="margin-bottom:10px;">Login e senha ficam a critério do administrador que está realizando o cadastro.</p>
+              <div class="filter-grid" style="background:transparent; border:none; padding:0; margin-bottom:10px;">
+                <div class="field-group">
+                  <label class="field-label">Login</label>
+                  <input type="text" class="field-input" placeholder="ex: carlos.trindade">
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Senha</label>
+                  <input type="password" class="field-input" placeholder="Definir senha inicial">
+                </div>
+              </div>
+              <div style="display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-gray" onclick="document.getElementById('wizard-etapa2').style.display='none'; document.getElementById('wizard-etapa1').style.display='block';">&larr; Voltar</button>
+                <button class="btn btn-orange" onclick="navigate('acessos', document.querySelectorAll('.nav-item')[9])">Concluir e Definir Acessos &rarr;</button>
               </div>
             </div>
 
@@ -989,6 +1095,28 @@
                 </div>
               </div>
             </div>
+
+            <div class="grid-two-col" style="margin-top:14px;">
+              <div style="background:#fff; border:1px solid var(--slate-300); border-radius:var(--radius-md); padding:14px;">
+                <label class="field-label" style="margin-bottom:6px; display:block;">Bandeiras para Extração</label>
+                <div style="display:flex; flex-wrap:wrap; gap:6px; padding:8px; border:1px solid var(--slate-200); border-radius:var(--radius-sm); min-height:60px; align-content:flex-start;">
+                  <span class="badge badge-orange">IPIRANGA ✕</span>
+                  <span class="badge badge-orange">SHELL/RAÍZEN ✕</span>
+                  <span class="badge badge-blue" style="cursor:pointer;">+ ADICIONAR BANDEIRA</span>
+                </div>
+              </div>
+              <div style="background:#fff; border:1px solid var(--slate-300); border-radius:var(--radius-md); padding:14px;">
+                <label class="field-label" style="margin-bottom:6px; display:block;">Tipo de Atendimento</label>
+                <select class="field-input">
+                  <option>Administrativo</option>
+                  <option>Técnico</option>
+                  <option>Consultor CL</option>
+                  <option>Exclusivo CL</option>
+                  <option>Associado</option>
+                  <option>Órgão Regulador</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1007,17 +1135,54 @@
             <div class="pane-header">
               <div>
                 <h3 class="pane-title">Abertura de Requisições de Vistoria</h3>
-                <p class="pane-sub">Upload massivo em lote ou cadastro manual unitário.</p>
+                <p class="pane-sub">Inspeção Caracterizada ou Coleta Sigilosa — em lote (planilha) ou avulsa (unitária).</p>
               </div>
               <span class="badge badge-purple">CNPJ Alfanumérico Habilitado</span>
             </div>
 
-            <div style="border:2px dashed var(--sgs-orange); background:var(--sgs-orange-surface); border-radius:var(--radius-lg); padding:20px; text-align:center; margin-bottom:16px;">
-              <strong style="color:var(--sgs-orange); font-size:13px; display:block;">📁 Arraste a planilha de postos (.xlsx ou .csv)</strong>
-              <p style="font-size:11px; color:var(--slate-600); margin:4px 0 10px 0;">Compatível com o formato alfanumérico da Receita Federal.</p>
-              <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
-                <button class="btn btn-orange">Selecionar Arquivo</button>
-                <button class="btn btn-gray">Baixar Arquivo Modelo</button>
+            <div style="display:flex; gap:8px; margin-bottom:14px;">
+              <button class="btn btn-orange" onclick="document.getElementById('req-lote').style.display='block'; document.getElementById('req-avulso').style.display='none';">Em Lote</button>
+              <button class="btn btn-gray" onclick="document.getElementById('req-lote').style.display='none'; document.getElementById('req-avulso').style.display='block';">Avulso (Manual)</button>
+            </div>
+
+            <div id="req-lote">
+              <div style="border:2px dashed var(--sgs-orange); background:var(--sgs-orange-surface); border-radius:var(--radius-lg); padding:20px; text-align:center; margin-bottom:16px;">
+                <strong style="color:var(--sgs-orange); font-size:13px; display:block;">📁 Arraste a planilha de postos (.xlsx ou .csv)</strong>
+                <p style="font-size:11px; color:var(--slate-600); margin:4px 0 10px 0;">Compatível com o formato alfanumérico da Receita Federal. Se algum CNPJ do lote não estiver validado na base ANP, o arquivo inteiro é rejeitado.</p>
+                <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+                  <button class="btn btn-orange">Selecionar Arquivo</button>
+                  <button class="btn btn-gray">Baixar Arquivo Modelo</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="req-avulso" style="display:none;">
+              <div class="filter-grid" style="background:#fff;">
+                <div class="field-group">
+                  <label class="field-label">Cliente</label>
+                  <select class="field-input"><option>Raízen Combustíveis S.A.</option><option>ICL Brasil</option></select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">CNPJ (Alfanumérico)</label>
+                  <input type="text" class="field-input" placeholder="12.ABC.345/0001-99">
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Produto</label>
+                  <select class="field-input"><option>Gasolina</option><option>Etanol</option><option>Diesel</option></select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Coleta de CL</label>
+                  <select class="field-input"><option>Não</option><option>Sim — restringe às opções do convênio ICL</option></select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Coleta Emergencial</label>
+                  <select class="field-input"><option>Não</option><option>Sim — prioridade máxima</option></select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label">Observação</label>
+                  <input type="text" class="field-input" placeholder="Campo livre">
+                </div>
+                <button class="btn btn-orange">Criar OS</button>
               </div>
             </div>
 
@@ -1112,38 +1277,135 @@
           <div class="pane-content">
             <div class="pane-header">
               <div>
-                <h3 class="pane-title">Coleta Sigilosa #11090 • Ipiranga</h3>
+                <h3 class="pane-title">Coleta Sigilosa #11090 • Ipiranga <span class="badge badge-red" style="margin-left:6px;">Correção Necessária</span></h3>
                 <p class="pane-sub">CENTRO AUTOMOTIVO PILAR DO TIETÊ LTDA • São Paulo - SP</p>
               </div>
-              <button class="btn btn-green">Submeter Vistoria</button>
+              <button class="btn btn-green">Corrigir e Re-submeter</button>
             </div>
 
             <div class="banner banner-red">
-              <span>⚠️ <strong>Aviso do Gestor:</strong> Favor retificar a vinculação da OS para categoria ICL e reconfirmar o bico 22.</span>
+              <span>⚠️ <strong>Aviso do Gestor (Correção Necessária):</strong> Favor retificar a vinculação da OS para categoria ICL e reconfirmar o bico 22.</span>
+            </div>
+            <div class="banner banner-orange">
+              <span>✨ <strong>Melhoria Confirmada pelo Cliente (RF-09):</strong> "Alterar layout para opções de consulta/atendimento/extração/importação de pedidos para coletas de quantidade (importação de foto fachada / nota / e medição)."</span>
             </div>
 
+            <p class="pane-sub" style="font-weight:700; color:var(--slate-700); margin-bottom:6px;">Bloco 1 — Dados da Coleta</p>
             <div class="filter-grid" style="background:#fff;">
               <div class="field-group">
-                <label class="field-label">Bomba / Bico</label>
-                <input type="text" class="field-input" value="Bomba 04 / Bico 22">
+                <label class="field-label">Operante / Não Operante</label>
+                <select class="field-input"><option>Operante</option><option>Não Operante</option></select>
               </div>
               <div class="field-group">
-                <label class="field-label">Temperatura</label>
+                <label class="field-label">Tipo de Observação</label>
+                <select class="field-input">
+                  <option>Abastecimento, combustível errado</option>
+                  <option>Bomba sem identificação</option>
+                  <option>Clone</option>
+                  <option>Coleta desconsiderada</option>
+                  <option>Divergência cadastral</option>
+                  <option>Em obras / fechado</option>
+                  <option>Não localizado</option>
+                  <option>Outros</option>
+                  <option>Sem autorização da ANP para trabalhar</option>
+                  <option>Sem nota fiscal</option>
+                  <option>Sem sistema</option>
+                  <option>Sem tipo de combustível</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Data / Hora</label>
+                <input type="text" class="field-input" value="05/09/2026 14:32 (automático)" disabled>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Bandeira Observada em Campo</label>
+                <select class="field-input"><option>Ipiranga</option><option>Raízen/Shell</option><option>Vibra Energia</option><option>Alesat</option><option>Branca</option></select>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Número de Bomba</label>
+                <input type="text" class="field-input" value="04">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Número de Bico</label>
+                <input type="text" class="field-input" value="22">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Tipo de Bomba</label>
+                <input type="text" class="field-input" placeholder="Fabricante/operadora da bomba">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Temperatura da Coleta</label>
                 <input type="text" class="field-input" value="22.0 °C">
               </div>
               <div class="field-group">
-                <label class="field-label">Volume Aferido</label>
-                <input type="text" class="field-input" value="24.000 L">
+                <label class="field-label">Clone</label>
+                <select class="field-input"><option>Não</option><option>Sim</option></select>
+              </div>
+            </div>
+
+            <p class="pane-sub" style="font-weight:700; color:var(--slate-700); margin-bottom:6px;">Bloco 2 — Volumétrico</p>
+            <div class="filter-grid" style="background:#fff;">
+              <div class="field-group">
+                <label class="field-label">Volume Comprado (bomba)</label>
+                <input type="text" class="field-input" value="26,900 L">
               </div>
               <div class="field-group">
-                <label class="field-label">Defasagem</label>
+                <label class="field-label">Volume Real Medido</label>
+                <input type="text" class="field-input" value="22,300 L">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Temperatura da Amostra</label>
+                <input type="text" class="field-input" value="19.0 °C">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Volume Corrigido (auto)</label>
+                <input type="text" class="field-input" value="24.000 L" disabled>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Defasagem em Litros (auto)</label>
+                <input type="text" class="field-input" value="0,189 L" disabled>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Defasagem % (auto)</label>
+                <input type="text" class="field-input" value="0,784%" disabled>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Resultado Volumétrico (auto)</label>
                 <div style="background:#dcfce7; color:#15803d; font-weight:bold; height:34px; display:flex; align-items:center; justify-content:center; border-radius:var(--radius-sm); font-size:11px;">
-                  0,189 L (0,784%) • OK
+                  ✓ Conforme
                 </div>
               </div>
             </div>
 
-            <label class="field-label" style="display:block; margin-bottom:6px;">Evidências Fotográficas:</label>
+            <p class="pane-sub" style="font-weight:700; color:var(--slate-700); margin-bottom:6px;">Bloco 3 — Análise Físico-Química</p>
+            <div class="filter-grid" style="background:#fff;">
+              <div class="field-group">
+                <label class="field-label">Aspecto</label>
+                <select class="field-input"><option>Limpo e Isento de Impurezas / Conforme</option><option>Não Conforme</option></select>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Cor</label>
+                <select class="field-input"><option>Límpida / Amarela / Conforme</option><option>Não Conforme</option></select>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Massa Específica a 20°C</label>
+                <input type="text" class="field-input" value="740,4 kg/m³">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Teor de Etanol (%)</label>
+                <input type="text" class="field-input" value="27%">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Teste Indicativo de Metanol</label>
+                <select class="field-input"><option>Não analisado</option><option>Ausente</option><option>Presente</option></select>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Teste de Marcador</label>
+                <select class="field-input"><option>Preenchido</option><option>Não preenchido</option></select>
+              </div>
+            </div>
+
+            <label class="field-label" style="display:block; margin-bottom:6px;">Bloco 4 — Evidências Fotográficas:</label>
             <div class="photo-deck">
               <div class="photo-item">
                 <div class="photo-thumb">🏪</div>
@@ -1191,6 +1453,16 @@
 
             <div class="banner banner-blue">
               <span>🔒 <strong>Trava ICL:</strong> Não é permitido emitir laudos do convênio ICL junto com postos comuns.</span>
+            </div>
+
+            <div class="banner banner-orange">
+              <span>✨ <strong>Melhoria Confirmada pelo Cliente (RF-06):</strong> "Instalar trava de ICL para página de laudos, travando emissão separada do cliente ICL para outros clientes."</span>
+            </div>
+            <div class="banner banner-orange">
+              <span>✨ <strong>Melhoria Confirmada pelo Cliente (RF-07):</strong> "Incluir alteração de layout de laudos, com manutenção de dados e opções para incluir novos itens no laudo."</span>
+            </div>
+            <div class="banner banner-orange">
+              <span>✨ <strong>Melhoria Confirmada pelo Cliente (RF-08):</strong> "Incluir laudo para apenas quantidade."</span>
             </div>
 
             <div class="table-responsive">
@@ -1249,6 +1521,22 @@
                 <p class="pane-sub">Cadastro Unitário e Lote.</p>
               </div>
               <span class="badge badge-green">Padrão Receita 2026</span>
+            </div>
+
+            <div class="banner banner-orange">
+              <span>✨ <strong>Melhoria Confirmada pelo Cliente (RF-01):</strong> "Na carga ANP, deveria ter uma aba que permitia a subida de 1 CNPJ manual por vez para cadastro, ao invés de subir a carga inteira."</span>
+            </div>
+            <div class="banner banner-orange">
+              <span>✨ <strong>Melhoria Confirmada pelo Cliente (RF-02):</strong> "Habilitar CNPJ com letras e números para atender nova interação da Receita Federal para novos CNPJs."</span>
+            </div>
+
+            <div style="border:2px dashed var(--sgs-orange); background:var(--sgs-orange-surface); border-radius:var(--radius-lg); padding:16px; text-align:center; margin-bottom:14px;">
+              <strong style="color:var(--sgs-orange); font-size:13px; display:block;">📁 Upload da Base Completa ANP (.xlsx / .csv)</strong>
+              <p style="font-size:11px; color:var(--slate-600); margin:4px 0 10px 0;">Base oficial com mais de 46.000 postos, atualizada mensalmente (CNPJ, Razão Social, Endereço, Bairro, CEP, UF, Município, Bandeira).</p>
+              <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-orange">Selecionar Arquivo</button>
+                <button class="btn btn-gray">Baixar Layout Padrão</button>
+              </div>
             </div>
 
             <div style="background:#ffffff; border:1px solid var(--green-600); border-radius:var(--radius-md); padding:12px; margin-bottom:14px;">
@@ -1311,6 +1599,13 @@
                 <p class="pane-sub">Exportação massiva com fórmulas matemáticas intactas.</p>
               </div>
               <button class="btn btn-green">📥 Exportar Excel (&gt;2k lin)</button>
+            </div>
+
+            <div class="banner banner-orange">
+              <span>✨ <strong>Melhoria Confirmada pelo Cliente (RF-10):</strong> "Na extração de relatório o sistema deverá permitir tirar mais de 2000 linhas mesmo estando com fórmula."</span>
+            </div>
+            <div class="banner banner-orange">
+              <span>✨ <strong>Melhoria Confirmada pelo Cliente (RF-05):</strong> "Incluir ou alterar planilha de extração de relatório ou importar relatórios, permitindo deixar atualizada caso fórmulas precisem ser atualizadas."</span>
             </div>
 
             <div class="kpi-row">
@@ -1391,6 +1686,10 @@
               <button class="btn btn-green">Salvar Cliente</button>
             </div>
 
+            <div class="banner banner-orange">
+              <span>✨ <strong>Melhoria Confirmada pelo Cliente (RF-03):</strong> "Incluir ou modificar Bandeiras de distribuidores (habilitados pela ANP)."</span>
+            </div>
+
             <div class="filter-grid" style="background:#fff;">
               <div class="field-group">
                 <label class="field-label">Razão Social</label>
@@ -1432,6 +1731,10 @@
               <button class="btn btn-orange">+ Novo Parâmetro</button>
             </div>
 
+            <div class="banner banner-orange">
+              <span>✨ <strong>Melhoria Confirmada pelo Cliente (RF-04):</strong> "Incluir ou modificar perfil de análise conforme atualização da ANP (teor de etanol / teor de biodiesel)."</span>
+            </div>
+
             <div class="table-responsive">
               <table class="data-table">
                 <thead>
@@ -1455,6 +1758,13 @@
                     <td><strong>Teor de Biodiesel</strong></td>
                     <td>NBR 15764</td>
                     <td><strong>14% vol (B14)</strong></td>
+                    <td><span class="badge badge-green">Vigente</span></td>
+                    <td style="text-align:center;"><button class="btn-table">Editar</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Massa Específica a 20°C</strong></td>
+                    <td>NBR 7148</td>
+                    <td><strong>Mín. 715,0 kg/m³</strong></td>
                     <td><span class="badge badge-green">Vigente</span></td>
                     <td style="text-align:center;"><button class="btn-table">Editar</button></td>
                   </tr>
